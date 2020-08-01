@@ -14,6 +14,7 @@ const checkUserIsAuthenticated = require('./middlewares/checkUserIsAuthenticated
 
 //routers
 const authRouter = require("./routers/auth-router");
+const noteRouter = require("./routers/note-router");
 
 
 //mongodb
@@ -34,9 +35,10 @@ app.listen(process.env.PORT || 3000, async () => {
     );
     db = await connectionAccount.db("universidadDeBastos"); // make a cluster
     let users = await db.createCollection("users"); // make a collection
+    let notes = await db.createCollection("notes"); // make a collection
     await db.collection("users").createIndex({ username: 1 }, { unique: true });
   
-    console.log("listening oon port bannana 300");
+    console.log("listening oono port bannana 300");
   } catch(e) {
     console.log(e)
   }
@@ -56,5 +58,7 @@ const passDBToRouter =  (req,res,next)=>{
 }
 
 app.use('/auth/',passDBToRouter, authRouter);
+app.use('/notes/', passDBToRouter,checkUserIsAuthenticated, noteRouter)
+
 
 module.exports = app;
