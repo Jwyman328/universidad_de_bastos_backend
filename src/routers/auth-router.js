@@ -1,6 +1,8 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs"); 
+require("dotenv").config();
+
 
 const authRouter = new express.Router();
 const signUpUserModel = require("../models/signUpUser")
@@ -9,7 +11,7 @@ authRouter.post("/sign_up", async (req, res) => {
     try{
       console.log(req.body, 'rb')
       const user = await signUpUserModel.validateAsync(req.body);
-      const newUserToken =  jwt.sign({email:user.email},'setStatic' ) //process.env.HASHKEY 
+      const newUserToken =  jwt.sign({email:user.email},process.env.HASHKEY) //
       user.password = await bcrypt.hash(user.password , 8 );
       await req.db.collection('users').insertOne({token:newUserToken, ...user })
       res.status(201)
