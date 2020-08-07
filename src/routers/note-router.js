@@ -1,6 +1,7 @@
 const express = require("express");
 const note = require("../models/notes");
 const noteRouter = new express.Router();
+const {ObjectId} = require('mongodb'); // or ObjectID 
 
 noteRouter.post("/", async (req, res) => {
   try {
@@ -11,7 +12,6 @@ noteRouter.post("/", async (req, res) => {
     const createNote = await req.db
       .collection("notes")
       .insertOne(noteDateValidated);
-    console.log("created", createNote);
     res.status(201).send(createNote);
   } catch (e) {
     console.log(e);
@@ -20,20 +20,37 @@ noteRouter.post("/", async (req, res) => {
   }
 });
 
-// noteRouter.get("/", async (req, res) => {
-//   try {
-//     console.log(" i was hit");
-//     const allMeditationsListened = await req.db
-//       .collection("meditationListened")
-//       .find({ username: req.user.username }).sort( { date_time_listened
-//         : 1 } )
-//       .toArray();
-//     res.status(200).send(allMeditationsListened);
-//   } catch (e) {
-//     console.log(e);
-//     res.status(400);
-//     res.send("error recording meditation listened");
-//   }
-// });
+noteRouter.get("/:videoId", async (req, res) => {
+  try {
+    const videoId = req.params.videoId
+    const notesOfVideo = await req.db
+      .collection("notes")
+      .find({ username: req.user.username, videoId:videoId }).sort( { videoTimeNoteTakenInSeconds
+        : 1 } )
+      .toArray();
+    res.status(200).send(notesOfVideo);
+  } catch (e) {
+    console.log(e);
+    res.status(400);
+    res.send("error");
+  }
+});
+
+noteRouter.put("/:noteId", async (req, res) => {
+  try {
+    const noteData = req.body;
+    const noteId = req.params.noteId
+    const noteIdInAsObjectId = new ObjectId(noteId)
+    //const notesOfVideo = await req.db.collection("notes").find({ "_id" :ObjectId(noteIdInAsObjectId)  }).toArray();
+
+    const notesOfVideo = await req.db
+      .collection("notes").updateOne({ "_id" :ObjectId(noteIdInAsObjectId)  },{  $set: {...noteData}})
+    res.status(200).send(notesOfVideo);
+  } catch (e) {
+    console.log(e);
+    res.status(400);
+    res.send("error");
+  }
+});
 
 module.exports = noteRouter;
