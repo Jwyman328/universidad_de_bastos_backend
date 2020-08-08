@@ -41,10 +41,23 @@ noteRouter.put("/:noteId", async (req, res) => {
     const noteData = req.body;
     const noteId = req.params.noteId
     const noteIdInAsObjectId = new ObjectId(noteId)
-    //const notesOfVideo = await req.db.collection("notes").find({ "_id" :ObjectId(noteIdInAsObjectId)  }).toArray();
-
-    const notesOfVideo = await req.db
+    const noteUpdated = await req.db
       .collection("notes").updateOne({ "_id" :ObjectId(noteIdInAsObjectId)  },{  $set: {...noteData}})
+    res.status(200).send(noteUpdated);
+  } catch (e) {
+    console.log(e);
+    res.status(400);
+    res.send("error");
+  }
+});
+
+noteRouter.delete("/:noteId", async (req, res) => {
+  try {
+   
+    const noteId = req.params.noteId
+    const noteIdInAsObjectId = new ObjectId(noteId)
+    const notesOfVideo = await req.db
+      .collection("notes").deleteOne({ "_id" :ObjectId(noteIdInAsObjectId)  })
     res.status(200).send(notesOfVideo);
   } catch (e) {
     console.log(e);
