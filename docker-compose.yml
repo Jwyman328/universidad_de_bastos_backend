@@ -11,8 +11,19 @@ services:
         volumes:
             - ./:/usr/src/bastos-backend-node
         depends_on:
-                - mongo-bastos
+            - mongo-bastos
     mongo-bastos:
         image: mongo
         ports: 
             - "27017:27017"
+        
+    mongo-seed-users:
+        build: ./seeds/users
+        depends_on:
+            - mongo-bastos
+
+    mongo-seed-notes:
+        build: ./seeds/notes
+        depends_on:
+            - mongo-bastos
+        
