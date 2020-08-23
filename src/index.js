@@ -24,9 +24,9 @@ const connectToMongo = require('./db/mongo_client_db');
 
 let db;
 let databaseLocation;
-if(process.env.NODE_ENV='DEV'){
+if(process.env.NODE_ENV==='DEV'){
   console.log('In developmnet mode')
-  databaseLocation = process.env.DATABASEURLLOCAL
+  databaseLocation = process.env.DATABASEURLLOCALDOCKER
 }else{
   console.log('production mode')
   databaseLocation = process.env.DATABASEURL
