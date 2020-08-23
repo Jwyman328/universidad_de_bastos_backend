@@ -6,31 +6,30 @@ bookRouter.get("/", async (req, res) => {
   try {
     const user = req.user;
     const allBooks = await req.db.collection("books").find({}).toArray();
+
     const allBooksReadByUser = await req.db
       .collection("books-read")
       .find({ userId: user._id })
       .toArray();
-    
-
     const arrayOfBookIdsRead = allBooksReadByUser.map(bookRead => {
         return bookRead.bookId
     })
 
-    
-    const allBooksModified = allBooks.map((book) => {
+    const allBooksWithUserSpecificHasBeenReadByUserField = allBooks.map((book) => {
         if(arrayOfBookIdsRead.includes(String(book._id))){
             book.hasBeenReadByUser = true
         }
         return book
     })
 
-    res.status(201).send(allBooksModified);
+    res.status(201).send(allBooksWithUserSpecificHasBeenReadByUserField);
   } catch (e) {
     console.log(e);
     res.status(400);
     res.send("error getting books");
   }
 });
+
 
 bookRouter.post("/read/", async (req, res) => {
   try {
