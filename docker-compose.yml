@@ -26,4 +26,9 @@ services:
         build: ./seeds/notes
         depends_on:
             - mongo-bastos
+
+    mongo-seed-books:
+        build: ./seeds/books
+        depends_on:
+            - mongo-bastos
         

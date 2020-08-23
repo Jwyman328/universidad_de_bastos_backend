@@ -21,6 +21,7 @@ const noteRouter = require("./routers/note-router");
 const MongoClient = require("mongodb").MongoClient;
 var connectionAccount;
 const connectToMongo = require('./db/mongo_client_db');
+const bookRouter = require("./routers/book-router");
 
 let db;
 let databaseLocation;
@@ -44,6 +45,9 @@ app.listen(process.env.PORT || 3000, async () => {
     db = await connectionAccount.db("universidadDeBastos"); // make a cluster
     let users = await db.createCollection("users"); // make a collection
     let notes = await db.createCollection("notes"); // make a collection
+    let books = await db.createCollection("books"); // make a collection
+    let booksRead = await db.createCollection("books-read"); // make a collection
+
     await db.collection("users").createIndex({ username: 1 }, { unique: true });
   
     console.log("listening oono port bannana 300");
@@ -67,6 +71,7 @@ const passDBToRouter =  (req,res,next)=>{
 
 app.use('/auth/',passDBToRouter, authRouter);
 app.use('/notes/', passDBToRouter,checkUserIsAuthenticated, noteRouter)
+app.use('/books/', passDBToRouter,checkUserIsAuthenticated, bookRouter)
 
 
 module.exports = app;

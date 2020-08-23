@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --watchAll --runInBand --detectOpenHandles --forceExit",
     "start": "node ./src/index.js",
-    "dev": "NODE_ENV=DEV  node ./src/index.js"
+    "dev": "NODE_ENV=DEV  node  ./src/index.js"
 
   },
   "repository": {

@@ -5,10 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Docker: Attach to Node",
             "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/src/index.js"
-        }
+            "address": "localhost",
+            "request": "attach",
+            "remoteRoot": "/",
+            "localRoot": "${workspaceFolder}",
+            "port": 3001,
+            "protocol": "inspector"
+        },
+      
     ]
 }
