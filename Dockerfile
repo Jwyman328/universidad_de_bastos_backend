@@ -1,11 +1,13 @@
-FROM node:12
+FROM node:10.13.0
 
-WORKDIR /usr/src/backendapi 
+CMD ["/bin/bash"]
+
+WORKDIR /usr/src/bastosBackEnd
+
 
 COPY ./ ./ 
 
+
 RUN npm install 
+EXPOSE 3001
 
-EXPOSE 3000
-
-CMD ["npm", "start"]

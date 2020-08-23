@@ -1,18 +1,16 @@
-version: "3.7"
-
+version: '3.6'
 services:
-    app:
-        container_name: meditation-web-app 
-        restart: always
-        build: .
-        ports:
-            - "3000:3000"
-        volumes:
-            - ./:/usr/src/backendapiman
-        links:
-            - mongo
-    mongo:
-        container_name: mongo-meditation
+    bastos-backend-node: 
+        container_name: bastos-node
+        image: node:8.11.1
+        build: ./
+        command: npm start
+        working_dir: /usr/src/bastosBackEnd
+        ports: 
+            - "5000:5000"
+        depends_on:
+                - mongo-bastos
+    mongo-bastos:
         image: mongo
         ports: 
             - "27017:27017"

@@ -23,10 +23,18 @@ var connectionAccount;
 const connectToMongo = require('./db/mongo_client_db');
 
 let db;
+let databaseLocation;
+if(process.env.NODE_ENV='DEV'){
+  console.log('In developmnet mode')
+  databaseLocation = process.env.DATABASEURLLOCAL
+}else{
+  console.log('production mode')
+  databaseLocation = process.env.DATABASEURL
+}
 app.listen(process.env.PORT || 3000, async () => {
   try{
     connectionAccount = await MongoClient.connect(  //
-      process.env.DATABASEURL
+      databaseLocation
     ,
       {
         useNewUrlParser: true,
