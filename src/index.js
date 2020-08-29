@@ -1,6 +1,7 @@
 const express = require("express");
 var cors = require("cors");
 
+
 const app = express();
 app.use(cors());
 var bodyParser = require("body-parser");
@@ -22,6 +23,9 @@ const MongoClient = require("mongodb").MongoClient;
 var connectionAccount;
 const connectToMongo = require('./db/mongo_client_db');
 const bookRouter = require("./routers/book-router");
+
+const DalDb = require("./DAL/dalDB");
+const BooksDal = require("./DAL/books/booksDal");
 
 let db;
 let databaseLocation;
@@ -69,9 +73,22 @@ const passDBToRouter =  (req,res,next)=>{
   }
 }
 
+const convertDBToDALDB =  (req,res,next)=>{ 
+  try{
+    req.db =  db;
+    req.db = new DalDb(req.db,BooksDal)
+    next()
+  }
+  catch(e){
+    console.log(e)
+    res.status(500)
+    res.send('error')
+  }
+}
+
 app.use('/auth/',passDBToRouter, authRouter);
-app.use('/notes/', passDBToRouter,checkUserIsAuthenticated, noteRouter)
-app.use('/books/', passDBToRouter,checkUserIsAuthenticated, bookRouter)
+app.use('/notes/', passDBToRouter,checkUserIsAuthenticated,convertDBToDALDB, noteRouter)
+app.use('/books/', passDBToRouter,checkUserIsAuthenticated,convertDBToDALDB, bookRouter)
 
 
 module.exports = app;
