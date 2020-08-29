@@ -26,6 +26,7 @@ const bookRouter = require("./routers/book-router");
 
 const DalDb = require("./DAL/dalDB");
 const BooksDal = require("./DAL/books/booksDal");
+const NotesDal = require("./DAL/books/notesDal");
 
 let db;
 let databaseLocation;
@@ -76,7 +77,7 @@ const passDBToRouter =  (req,res,next)=>{
 const convertDBToDALDB =  (req,res,next)=>{ 
   try{
     req.db =  db;
-    req.db = new DalDb(req.db,BooksDal)
+    req.db = new DalDb(req.db,BooksDal, NotesDal)
     next()
   }
   catch(e){

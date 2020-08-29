@@ -8,11 +8,9 @@ noteRouter.post("/", async (req, res) => {
     const noteData = req.body;
     const username = req.user.username;
     const noteDataWithUserName = { ...noteData, username: username };
-    const noteDateValidated = await note.validateAsync(noteDataWithUserName);
-    const createNote = await req.db
-      .collection("notes")
-      .insertOne(noteDateValidated);
-    res.status(201).send(createNote);
+    const createdNote = await req.db.notesDal.createNote(noteDataWithUserName)
+
+    res.status(201).send(createdNote);
   } catch (e) {
     console.log(e);
     res.status(400);
@@ -23,11 +21,9 @@ noteRouter.post("/", async (req, res) => {
 noteRouter.get("/:videoId", async (req, res) => {
   try {
     const videoId = req.params.videoId
-    const notesOfVideo = await req.db
-      .collection("notes")
-      .find({ username: req.user.username, videoId:videoId }).sort( { videoTimeNoteTakenInSeconds
-        : 1 } )
-      .toArray();
+    const username = req.user.username
+    const notesOfVideo = await req.db.notesDal.getVideoNotes(username,videoId)
+
     res.status(200).send(notesOfVideo);
   } catch (e) {
     console.log(e);
@@ -40,9 +36,8 @@ noteRouter.put("/:noteId", async (req, res) => {
   try {
     const noteData = req.body;
     const noteId = req.params.noteId
-    const noteIdInAsObjectId = new ObjectId(noteId)
-    const noteUpdated = await req.db
-      .collection("notes").updateOne({ "_id" :ObjectId(noteIdInAsObjectId)  },{  $set: {...noteData}})
+    const noteUpdated = await req.db.notesDal.updateNote(noteData, noteId)
+
     res.status(200).send(noteUpdated);
   } catch (e) {
     console.log(e);
@@ -56,9 +51,9 @@ noteRouter.delete("/:noteId", async (req, res) => {
    
     const noteId = req.params.noteId
     const noteIdInAsObjectId = new ObjectId(noteId)
-    const notesOfVideo = await req.db
-      .collection("notes").deleteOne({ "_id" :ObjectId(noteIdInAsObjectId)  })
-    res.status(200).send(notesOfVideo);
+    const deletedNote = await req.db.notesDal.deleteNote(noteId)
+
+    res.status(200).send(deletedNote);
   } catch (e) {
     console.log(e);
     res.status(400);
