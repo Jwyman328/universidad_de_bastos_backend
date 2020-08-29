@@ -8,8 +8,6 @@
     "start": "node ./src/index.js",
     "dev": "NODE_ENV=DEV  node  ./src/index.js",
     "dev-debug": "NODE_ENV=DEV  node --inspect-brk=0.0.0.0  ./src/index.js"
-
-
   },
   "repository": {
     "type": "git",
@@ -33,10 +31,13 @@
     "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.7",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "prettier": "^2.1.1"
   },
   "devDependencies": {
+    "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "pretty-quick": "^3.0.0",
     "supertest": "^4.0.2"
   },
   "keywords": [
@@ -45,5 +46,10 @@
   ],
   "engines": {
     "node": "12.14.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

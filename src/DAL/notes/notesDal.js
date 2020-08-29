@@ -1,5 +1,5 @@
-const {ObjectId} = require('mongodb'); // or ObjectID 
-const note = require('../../models/notes');
+const { ObjectId } = require("mongodb"); // or ObjectID
+const note = require("../../models/notes");
 
 module.exports = class NotesDal {
   constructor(db) {
@@ -24,18 +24,23 @@ module.exports = class NotesDal {
     return notesOfVideo;
   }
 
-  async updateNote(noteData,noteId) {
-    const noteIdInAsObjectId = new ObjectId(noteId)
+  async updateNote(noteData, noteId) {
+    const noteIdInAsObjectId = new ObjectId(noteId);
     const noteUpdated = await this.db
-      .collection("notes").updateOne({ "_id" :ObjectId(noteIdInAsObjectId)  },{  $set: {...noteData}})
+      .collection("notes")
+      .updateOne(
+        { _id: ObjectId(noteIdInAsObjectId) },
+        { $set: { ...noteData } }
+      );
 
     return noteUpdated;
   }
 
   async deleteNote(noteId) {
-    const noteIdInAsObjectId = new ObjectId(noteId)
+    const noteIdInAsObjectId = new ObjectId(noteId);
     const deletedNote = await this.db
-      .collection("notes").deleteOne({ "_id" :ObjectId(noteIdInAsObjectId)  })
+      .collection("notes")
+      .deleteOne({ _id: ObjectId(noteIdInAsObjectId) });
 
     return deletedNote;
   }
