@@ -26,6 +26,8 @@ const DalDb = require("./DAL/dalDB");
 const BooksDal = require("./DAL/books/booksDal");
 const NotesDal = require("./DAL/notes/notesDal");
 const AuthDal = require("./DAL/auth/authDal");
+const VideoDal = require("./DAL/videos/videoDal");
+const videoRouter = require("./routers/video-router");
 
 let db;
 let databaseLocation;
@@ -51,6 +53,8 @@ app.listen(process.env.PORT || 3000, async () => {
     let notes = await db.createCollection("notes"); // make a collection
     let books = await db.createCollection("books"); // make a collection
     let booksRead = await db.createCollection("books-read"); // make a collection
+    let videos = await db.createCollection("videos"); // make a collection
+    let videoWatched = await db.createCollection("videos-watched"); // make a collection
 
     await db.collection("users").createIndex({ username: 1 }, { unique: true });
 
@@ -74,7 +78,7 @@ const passDBToRouter = (req, res, next) => {
 const convertDBToDALDB = (req, res, next) => {
   try {
     req.db = db;
-    req.db = new DalDb(req.db, BooksDal, NotesDal, AuthDal);
+    req.db = new DalDb(req.db, BooksDal, NotesDal, AuthDal, VideoDal);
     next();
   } catch (e) {
     console.log(e);
@@ -97,6 +101,14 @@ app.use(
   checkUserIsAuthenticated,
   convertDBToDALDB,
   bookRouter
+);
+
+app.use(
+  "/videos/",
+  passDBToRouter,
+  checkUserIsAuthenticated,
+  convertDBToDALDB,
+  videoRouter
 );
 
 module.exports = app;

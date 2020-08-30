@@ -1,35 +1,39 @@
-version: '3.6'
+version: "3.6"
 services:
-    bastos-backend-node: 
-        container_name: bastos-node
-        image: node:8.11.1
-        build: ./
-        command: npm run dev
-        working_dir: /usr/src/bastosBackEnd
-        ports: 
-            - "5000:5000"
-            - "9229:9229"
-        volumes:
-            - ./:/usr/src/bastos-backend-node
-        depends_on:
-            - mongo-bastos
-    mongo-bastos:
-        image: mongo
-        ports: 
-            - "27017:27017"
-        
-    mongo-seed-users:
-        build: ./seeds/users
-        depends_on:
-            - mongo-bastos
+  bastos-backend-node:
+    container_name: bastos-node
+    image: node:8.11.1
+    build: ./
+    command: npm run dev
+    working_dir: /usr/src/bastosBackEnd
+    ports:
+      - "5000:5000"
+      - "9229:9229"
+    volumes:
+      - ./:/usr/src/bastos-backend-node
+    depends_on:
+      - mongo-bastos
+  mongo-bastos:
+    image: mongo
+    ports:
+      - "27017:27017"
 
-    mongo-seed-notes:
-        build: ./seeds/notes
-        depends_on:
-            - mongo-bastos
+  mongo-seed-users:
+    build: ./seeds/users
+    depends_on:
+      - mongo-bastos
 
-    mongo-seed-books:
-        build: ./seeds/books
-        depends_on:
-            - mongo-bastos
-        
+  mongo-seed-notes:
+    build: ./seeds/notes
+    depends_on:
+      - mongo-bastos
+
+  mongo-seed-books:
+    build: ./seeds/books
+    depends_on:
+      - mongo-bastos
+
+  mongo-seed-videos:
+    build: ./seeds/videos
+    depends_on:
+      - mongo-bastos
