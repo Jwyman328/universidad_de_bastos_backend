@@ -18,7 +18,6 @@ module.exports = class VideoDal {
       .toArray();
 
     if (doesVideoWatchedExist.length === 0) {
-      console.log("new");
       createdVideoWatched = await this.db
         .collection("videos-watched")
         .insertOne(videoDataValidated);
@@ -34,8 +33,31 @@ module.exports = class VideoDal {
     return createdVideoWatched;
   }
 
-  async getAllVideos() {
-    const allVideos = await this.db.collection("videos").find({});
-    return allVideos;
+  async getAllVideos(userId) {
+    const allVideos = await this.db.collection("videos").find({}).toArray();
+
+    const allVideosWatchedByUser = await this.db
+      .collection("videos-watched")
+      .find({ userId: userId })
+      .toArray();
+
+    const arrayOfVideosUrlsWatched = allVideosWatchedByUser.map(
+      (videoWatched) => {
+        return videoWatched.videoUrl;
+      }
+    );
+
+    const allVideosWatchedWithUserSpecificHasBeenReadByUserField = allVideos.map(
+      (video) => {
+        if (arrayOfVideosUrlsWatched.includes(video.videoUrl)) {
+          video.hasBeenWatchedByUser = true;
+        } else {
+          video.hasBeenWatchedByUser = false;
+        }
+        return video;
+      }
+    );
+
+    return allVideosWatchedWithUserSpecificHasBeenReadByUserField;
   }
 };

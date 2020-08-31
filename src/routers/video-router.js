@@ -27,7 +27,7 @@ videoRouter.post("/", async (req, res) => {
 
 videoRouter.get("/", async (req, res) => {
   try {
-    const videos = await req.db.videoDal.getAllVideos();
+    const videos = await req.db.videoDal.getAllVideos(req.user._id);
 
     res.status(200).send(videos);
   } catch (e) {
