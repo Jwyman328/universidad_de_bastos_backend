@@ -37,3 +37,8 @@ services:
     build: ./seeds/videos
     depends_on:
       - mongo-bastos
+
+  mongo-seed-articles:
+    build: ./seeds/articles
+    depends_on:
+      - mongo-bastos

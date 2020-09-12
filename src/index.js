@@ -15,19 +15,21 @@ const checkUserIsAuthenticated = require("./middlewares/checkUserIsAuthenticated
 //routers
 const authRouter = require("./routers/auth-router");
 const noteRouter = require("./routers/note-router");
+const bookRouter = require("./routers/book-router");
+const videoRouter = require("./routers/video-router");
+const articleRouter = require("./routers/article-router");
 
 //mongodb
 const MongoClient = require("mongodb").MongoClient;
 var connectionAccount;
 const connectToMongo = require("./db/mongo_client_db");
-const bookRouter = require("./routers/book-router");
 
 const DalDb = require("./DAL/dalDB");
 const BooksDal = require("./DAL/books/booksDal");
 const NotesDal = require("./DAL/notes/notesDal");
 const AuthDal = require("./DAL/auth/authDal");
 const VideoDal = require("./DAL/videos/videoDal");
-const videoRouter = require("./routers/video-router");
+const ArticleDAL = require("./DAL/articles/articlesDAL");
 
 let db;
 let databaseLocation;
@@ -49,12 +51,13 @@ app.listen(process.env.PORT || 3000, async () => {
       }
     );
     db = await connectionAccount.db("universidadDeBastos"); // make a cluster
-    let users = await db.createCollection("users"); // make a collection
-    let notes = await db.createCollection("notes"); // make a collection
-    let books = await db.createCollection("books"); // make a collection
-    let booksRead = await db.createCollection("books-read"); // make a collection
-    let videos = await db.createCollection("videos"); // make a collection
-    let videoWatched = await db.createCollection("videos-watched"); // make a collection
+    let users = await db.createCollection("users");
+    let notes = await db.createCollection("notes");
+    let books = await db.createCollection("books");
+    let articles = await db.createCollection("articles");
+    let booksRead = await db.createCollection("books-read");
+    let videos = await db.createCollection("videos");
+    let videoWatched = await db.createCollection("videos-watched");
 
     await db.collection("users").createIndex({ username: 1 }, { unique: true });
 
@@ -78,7 +81,14 @@ const passDBToRouter = (req, res, next) => {
 const convertDBToDALDB = (req, res, next) => {
   try {
     req.db = db;
-    req.db = new DalDb(req.db, BooksDal, NotesDal, AuthDal, VideoDal);
+    req.db = new DalDb(
+      req.db,
+      BooksDal,
+      NotesDal,
+      AuthDal,
+      VideoDal,
+      ArticleDAL
+    );
     next();
   } catch (e) {
     console.log(e);
@@ -109,6 +119,14 @@ app.use(
   checkUserIsAuthenticated,
   convertDBToDALDB,
   videoRouter
+);
+
+app.use(
+  "/article/",
+  passDBToRouter,
+  checkUserIsAuthenticated,
+  convertDBToDALDB,
+  articleRouter
 );
 
 module.exports = app;
